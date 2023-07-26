@@ -1,11 +1,8 @@
-import {Button} from "antd";
-
+import { Button } from 'antd';
+import { RouterProvider } from 'react-router-dom';
+import routes from '~/routes';
 function App() {
-    return (
-        <div>
-            <Button>hello</Button>
-        </div>
-    )
+    return <RouterProvider router={routes} />;
 }
 
 export default App;
