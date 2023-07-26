@@ -2,7 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import Login from '~/pages/login';
 import LoginRole from '~/pages/login/role';
 
-const routes = createBrowserRouter([
+export const routesConfig = [
     {
         path: '/login',
         element: <Login />,
@@ -11,6 +11,6 @@ const routes = createBrowserRouter([
         path: '/login/:role',
         element: <LoginRole />,
     },
-]);
+];
 
-export default routes;
+export default createBrowserRouter(routesConfig);
