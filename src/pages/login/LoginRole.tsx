@@ -1,4 +1,4 @@
-import { Navigate, useParams } from 'react-router-dom';
+import {Link, Navigate, useParams} from 'react-router-dom';
 import Header from '~/components/auth/header';
 import { Role } from '~/types/role';
 import { Button, Form, Input, Select, Typography } from 'antd';
@@ -119,15 +119,21 @@ export function LoginRole() {
                                     )}
                                 />
 
+                                <div className={'tw-flex tw-justify-end'}>
+                                    <Link to={'/forgot-password'}>
+                                        Quên mật khẩu?
+                                    </Link>
+                                </div>
+
                                 <Button
-                                    loading
+
                                     data-testid="submit-button"
                                     size={'large'}
-                                    className={'tw-w-full'}
+                                    className={'tw-w-full tw-mt-5'}
                                     type="primary"
                                     htmlType="submit"
                                 >
-                                    Tiếp tục
+                                    Đăng nhập
                                 </Button>
                             </Form>
                         </div>
