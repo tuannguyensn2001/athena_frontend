@@ -15,6 +15,8 @@ export default ({ mode }: any) => {
         test: {
             environment: 'jsdom',
             globals: true,
+            css: true,
+            setupFiles: './src/test/setup.ts'
         },
         // server: {
         //     port: 6000,

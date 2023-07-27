@@ -1,15 +1,14 @@
-import { createBrowserRouter } from 'react-router-dom';
-import Login from '~/pages/login';
-import LoginRole from '~/pages/login/role';
+import {createBrowserRouter} from 'react-router-dom';
+import {Login, LoginRole} from "~/pages/login";
 
 export const routesConfig = [
     {
         path: '/login',
-        element: <Login />,
+        element: <Login/>,
     },
     {
         path: '/login/:role',
-        element: <LoginRole />,
+        element: <LoginRole/>,
     },
 ];
 
