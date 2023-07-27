@@ -120,6 +120,7 @@ export function LoginRole() {
                                 />
 
                                 <Button
+                                    loading
                                     data-testid="submit-button"
                                     size={'large'}
                                     className={'tw-w-full'}
