@@ -1,4 +1,5 @@
-import {Link, Navigate, useParams} from 'react-router-dom';
+import axios from 'axios';
+import { Link, Navigate, useParams } from 'react-router-dom';
 import Header from '~/components/auth/header';
 import { Role } from '~/types/role';
 import { Button, Form, Input, Select, Typography } from 'antd';
@@ -49,6 +50,7 @@ export function LoginRole() {
     }, [role]);
 
     const submit = (data: FormType) => {
+        axios.post('http://localhost:14000/api/v1/auth/register');
         console.log(data);
     };
 
@@ -126,7 +128,6 @@ export function LoginRole() {
                                 </div>
 
                                 <Button
-
                                     data-testid="submit-button"
                                     size={'large'}
                                     className={'tw-w-full tw-mt-5'}
