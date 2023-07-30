@@ -1,17 +1,19 @@
 import { Button, Select } from 'antd';
 import { useMemo } from 'react';
-import { Controller, useForm } from 'react-hook-form';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useMatches, useNavigate, useParams } from 'react-router-dom';
 import { Role } from '~/types/role';
 
 function Header() {
-    const { role } = useParams<{ role: Role }>();
+    const { role } = useParams<{
+        role: Role;
+    }>();
 
     const hasRole = useMemo(() => {
         return role === 'teacher' || role === 'student';
     }, [role]);
 
     const navigate = useNavigate();
+    const [{ id }] = useMatches();
 
     const handleChangeRole = (val: Role) => {
         navigate(`/login/${val}`);
@@ -32,10 +34,19 @@ function Header() {
                             <Button size={'large'} type={'text'}>
                                 Trang chủ
                             </Button>
-                            <Button size={'large'}>Đăng ký </Button>
+                            {id === 'register' && (
+                                <Link to={'/login'}>
+                                    <Button size={'large'}>Đăng nhập </Button>
+                                </Link>
+                            )}
+                            {id === 'login' && (
+                                <Link to={'/register'}>
+                                    <Button size={'large'}>Đăng ký </Button>
+                                </Link>
+                            )}
                         </>
                     )}
-                    {hasRole && (
+                    {hasRole && id === 'login-role' && (
                         <div>
                             <Select
                                 onChange={handleChangeRole}
