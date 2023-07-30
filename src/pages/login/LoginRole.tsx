@@ -1,8 +1,11 @@
 import axios from 'axios';
+import { useMutation } from 'react-query';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import Header from '~/components/auth/header';
+import API from '~/config/network';
+import { ApiError, ApiResponse } from '~/types/app';
 import { Role } from '~/types/role';
-import { Button, Form, Input, Select, Typography } from 'antd';
+import { Button, Form, Input, message, Select, Typography } from 'antd';
 import { Controller, useForm } from 'react-hook-form';
 import clsx from 'clsx';
 import * as yup from 'yup';
@@ -28,7 +31,9 @@ const schema = yup.object().shape({
 });
 
 export function LoginRole() {
-    const { role } = useParams<{ role: Role }>();
+    const { role } = useParams<{
+        role: Role;
+    }>();
 
     if (role !== 'teacher' && role !== 'student') {
         return <Navigate to={'/login'} />;
@@ -42,6 +47,32 @@ export function LoginRole() {
         resolver: yupResolver(schema),
     });
 
+    const { mutate, isLoading } = useMutation<
+        ApiResponse<{
+            access_token: string;
+        }>,
+        ApiError,
+        FormType
+    >({
+        mutationKey: 'login',
+        mutationFn: async (data) => {
+            return API.post('/api/v1/auth/login', {
+                ...data,
+                role,
+            });
+        },
+        onSuccess({
+            data: {
+                data: { access_token },
+            },
+        }) {
+            localStorage.setItem('access_token', access_token);
+        },
+        onError() {
+            void message.error('Đăng nhập thất bại');
+        },
+    });
+
     useEffect(() => {
         reset({
             phone: '',
@@ -50,8 +81,7 @@ export function LoginRole() {
     }, [role]);
 
     const submit = (data: FormType) => {
-        axios.post('http://localhost:14000/api/v1/auth/register');
-        console.log(data);
+        mutate(data);
     };
 
     return (
@@ -128,6 +158,7 @@ export function LoginRole() {
                                 </div>
 
                                 <Button
+                                    loading={isLoading}
                                     data-testid="submit-button"
                                     size={'large'}
                                     className={'tw-w-full tw-mt-5'}

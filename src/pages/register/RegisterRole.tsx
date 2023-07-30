@@ -1,14 +1,16 @@
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, DatePicker, Form, Input, Typography } from 'antd';
+import { Button, DatePicker, Form, Input, message, Typography } from 'antd';
 import dayjs from 'dayjs';
 import { Controller, useForm } from 'react-hook-form';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { useMutation } from 'react-query';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+import * as yup from 'yup';
 import Header from '~/components/auth/header';
+import API from '~/config/network';
 import { IProfile } from '~/models/IProfile';
 import { IUser } from '~/models/IUser';
 import { Role } from '~/types/role';
-import * as yup from 'yup';
 
 type FormType = Pick<IUser, 'email' | 'password' | 'phone'> & {
     confirm_password: string;
@@ -48,6 +50,25 @@ export function RegisterRole() {
         return <Navigate to={'/register'} />;
     }
 
+    const navigate = useNavigate();
+
+    const { mutate, isLoading } = useMutation({
+        mutationKey: 'register',
+        mutationFn: async (data: FormType) => {
+            return API.post('/api/v1/auth/register', {
+                ...data,
+                role: role,
+            });
+        },
+        async onSuccess() {
+            await message.success('Đăng ký thành công');
+            navigate('/login');
+        },
+        onError() {
+            return void message.error('Đăng ký thất bại');
+        },
+    });
+
     const { control, handleSubmit } = useForm<FormType>({
         defaultValues: {
             email: '',
@@ -62,7 +83,7 @@ export function RegisterRole() {
     });
 
     const submit = (data: FormType) => {
-        console.log(data);
+        mutate(data);
     };
 
     return (
@@ -258,6 +279,7 @@ export function RegisterRole() {
                             />
 
                             <Button
+                                loading={isLoading}
                                 type={'primary'}
                                 htmlType={'submit'}
                                 className={'tw-w-full'}
