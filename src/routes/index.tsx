@@ -5,6 +5,10 @@ import { Register, RegisterRole } from '~/pages/register';
 
 export const routesConfig = [
     {
+        path: '/',
+        element: <div>hello athena</div>,
+    },
+    {
         path: '/login',
         element: <Login />,
         id: 'login',
