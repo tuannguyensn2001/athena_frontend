@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useMutation } from 'react-query';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import Header from '~/components/auth/header';
 import API from '~/config/network';
 import { ApiError, ApiResponse } from '~/types/app';
@@ -12,7 +12,6 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect } from 'react';
 import { Simulate } from 'react-dom/test-utils';
-import reset = Simulate.reset;
 
 interface FormType {
     phone: string;
@@ -47,6 +46,8 @@ export function LoginRole() {
         resolver: yupResolver(schema),
     });
 
+    const navigate = useNavigate();
+
     const { mutate, isLoading } = useMutation<
         ApiResponse<{
             access_token: string;
@@ -67,6 +68,7 @@ export function LoginRole() {
             },
         }) {
             localStorage.setItem('access_token', access_token);
+            navigate('/');
         },
         onError() {
             void message.error('Đăng nhập thất bại');

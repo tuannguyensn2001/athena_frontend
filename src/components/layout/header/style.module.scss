@@ -1,0 +1,7 @@
+.item {
+  @apply 'hover:tw-text-blue-600';
+}
+
+.active {
+  @apply 'tw-text-blue-600 tw-font-bold';
+}

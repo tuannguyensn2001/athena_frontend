@@ -1,12 +1,13 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { CardClass } from '~/components/class/CardClass';
+import { Header } from '~/components/layout/header';
 import { Login, LoginRole } from '~/pages/login';
 import { Register, RegisterRole } from '~/pages/register';
 
 export const routesConfig = [
     {
         path: '/',
-        element: <div>hello athena</div>,
+        element: <Header />,
     },
     {
         path: '/login',
