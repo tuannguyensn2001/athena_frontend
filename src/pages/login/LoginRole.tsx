@@ -68,7 +68,7 @@ export function LoginRole() {
             },
         }) {
             localStorage.setItem('access_token', access_token);
-            navigate('/');
+            navigate('/workshops');
         },
         onError() {
             void message.error('Đăng nhập thất bại');

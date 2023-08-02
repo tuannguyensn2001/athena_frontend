@@ -5,12 +5,16 @@ import { IUser } from '~/models/IUser';
 import { ApiError, ApiResponse, AppResponse } from '~/types/app';
 
 function useAuth() {
-    const { data } = useQuery<AppResponse<IUser>, ApiError>({
+    const { data, isFetched, isLoading } = useQuery<
+        AppResponse<IUser>,
+        ApiError
+    >({
         queryKey: 'auth',
         queryFn: async () => {
             const response = await API.get('/api/v1/auth/me');
             return response.data;
         },
+        retry: 1,
     });
     const user = useMemo(() => {
         return data?.data;
@@ -23,6 +27,8 @@ function useAuth() {
     return {
         user,
         isLoggedIn,
+        isFetched,
+        isLoading,
     };
 }
 

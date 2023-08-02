@@ -3,13 +3,16 @@ import {
     LogoutOutlined,
     ProfileOutlined,
 } from '@ant-design/icons';
-import { Avatar, Badge, Button, Dropdown, Typography } from 'antd';
+import { Avatar, Badge, Button, Dropdown, message, Typography } from 'antd';
 import clsx from 'clsx';
-import { Link } from 'react-router-dom';
+import { useQueryClient } from 'react-query';
+import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '~/hooks/useAuth';
 
 export function Header() {
     const { isLoggedIn, user } = useAuth();
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
     return (
         <header className={'tw-shadow-md'}>
             <nav className={'tw-flex tw-justify-between tw-py-4 tw-px-16'}>
@@ -23,10 +26,7 @@ export function Header() {
                     <div>
                         <Link to={'#'} className={'tw-no-underline tw-mr-12'}>
                             <Typography.Text
-                                className={clsx([
-                                    'hover:tw-text-blue-600',
-                                    'tw-text-blue-900 tw-font-bold',
-                                ])}
+                                className={clsx(['hover:tw-text-blue-600'])}
                             >
                                 Lớp học
                             </Typography.Text>
@@ -74,6 +74,16 @@ export function Header() {
                                             key: 'logout',
                                             label: 'Đăng xuất',
                                             icon: <LogoutOutlined />,
+                                            onClick: async () => {
+                                                localStorage.removeItem(
+                                                    'access_token',
+                                                );
+                                                navigate('/login');
+                                                await message.success(
+                                                    'Đăng xuất thành công',
+                                                );
+                                                await queryClient.invalidateQueries();
+                                            },
                                         },
                                     ],
                                 }}
@@ -88,7 +98,11 @@ export function Header() {
                             </Dropdown>
                         </>
                     )}
-                    {!isLoggedIn && <Button size={'large'}>Đăng nhập</Button>}
+                    {!isLoggedIn && (
+                        <Link to={'/login'}>
+                            <Button size={'large'}>Đăng nhập</Button>
+                        </Link>
+                    )}
                 </div>
             </nav>
         </header>
