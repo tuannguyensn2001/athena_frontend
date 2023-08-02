@@ -1,10 +1,12 @@
 import { Button, Form, Input, Select } from 'antd';
 import { Controller, useForm } from 'react-hook-form';
+import { useQuery } from 'react-query';
 import {
     createSearchParams,
     useNavigate,
     useSearchParams,
 } from 'react-router-dom';
+import API from '~/config/network';
 
 type Order =
     | 'name_asc'
@@ -27,6 +29,23 @@ export function ListWorkshops() {
         },
     });
     const navigate = useNavigate();
+    const { data } = useQuery({
+        queryKey: [
+            'workshops-own',
+            searchParams.get('name'),
+            searchParams.get('order'),
+        ],
+        queryFn: async () => {
+            const response = await API.get('/api/v1/workshops/own', {
+                params: {
+                    name: searchParams.get('name') || null,
+                    order: (searchParams.get('order') as Order) || null,
+                },
+            });
+            return response.data;
+        },
+        staleTime: Infinity,
+    });
 
     const submit = (data: FormType) => {
         const query: [string, string][] = [['name', data.name]];
