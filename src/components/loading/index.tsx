@@ -1,4 +1,4 @@
-import { Spin, Typography } from 'antd';
+import { Spin } from 'antd';
 
 export function Loading() {
     return (

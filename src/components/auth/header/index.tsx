@@ -1,16 +1,17 @@
 import { Button, Select } from 'antd';
 import { useMemo } from 'react';
 import { Link, useMatches, useNavigate, useParams } from 'react-router-dom';
-import { Role } from '~/types/role';
+import type { Role } from '~/types/role';
 
 function Header() {
     const { role } = useParams<{
         role: Role;
     }>();
 
-    const hasRole = useMemo(() => {
-        return role === 'teacher' || role === 'student';
-    }, [role]);
+    const hasRole = useMemo(
+        () => role === 'teacher' || role === 'student',
+        [role],
+    );
 
     const navigate = useNavigate();
     const [{ id }] = useMatches();

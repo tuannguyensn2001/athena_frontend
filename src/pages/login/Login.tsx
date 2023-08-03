@@ -1,10 +1,9 @@
 import { Button, Form, Select, Typography } from 'antd';
-import { useEffect, useMemo } from 'react';
+import clsx from 'clsx';
 import { Controller, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import Header from '~/components/auth/header';
-import { Role } from '~/types/role';
-import clsx from 'clsx';
+import type { Role } from '~/types/role';
 
 type FormType = {
     role: Role;

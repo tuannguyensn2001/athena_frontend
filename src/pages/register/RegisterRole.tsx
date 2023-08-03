@@ -8,9 +8,9 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
 import * as yup from 'yup';
 import Header from '~/components/auth/header';
 import API from '~/config/network';
-import { IProfile } from '~/models/IProfile';
-import { IUser } from '~/models/IUser';
-import { Role } from '~/types/role';
+import type { IProfile } from '~/models/IProfile';
+import type { IUser } from '~/models/IUser';
+import type { Role } from '~/types/role';
 
 type FormType = Pick<IUser, 'email' | 'password' | 'phone'> & {
     confirm_password: string;
@@ -46,20 +46,15 @@ export function RegisterRole() {
         role: Role;
     }>();
 
-    if (role !== 'teacher' && role !== 'student') {
-        return <Navigate to={'/register'} />;
-    }
-
     const navigate = useNavigate();
 
     const { mutate, isLoading } = useMutation({
         mutationKey: 'register',
-        mutationFn: async (data: FormType) => {
-            return API.post('/api/v1/auth/register', {
+        mutationFn: async (data: FormType) =>
+            API.post('/api/v1/auth/register', {
                 ...data,
                 role: role,
-            });
-        },
+            }),
         async onSuccess() {
             await message.success('Đăng ký thành công');
             navigate('/login');
@@ -81,6 +76,10 @@ export function RegisterRole() {
         },
         resolver: yupResolver(schema),
     });
+
+    if (role !== 'teacher' && role !== 'student') {
+        return <Navigate to={'/register'} />;
+    }
 
     const submit = (data: FormType) => {
         mutate(data);

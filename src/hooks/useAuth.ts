@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 import { useQuery } from 'react-query';
 import API from '~/config/network';
-import { IUser } from '~/models/IUser';
-import { ApiError, ApiResponse, AppResponse } from '~/types/app';
+import type { IUser } from '~/models/IUser';
+import type { ApiError, AppResponse } from '~/types/app';
 
 function useAuth() {
     const { data, isFetched, isLoading } = useQuery<
@@ -16,13 +16,9 @@ function useAuth() {
         },
         retry: 1,
     });
-    const user = useMemo(() => {
-        return data?.data;
-    }, [data]);
+    const user = useMemo(() => data?.data, [data]);
 
-    const isLoggedIn = useMemo(() => {
-        return !!user;
-    }, [user]);
+    const isLoggedIn = useMemo(() => !!user, [user]);
 
     return {
         user,

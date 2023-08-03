@@ -1,17 +1,15 @@
-import axios from 'axios';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Button, Form, Input, message, Typography } from 'antd';
+import clsx from 'clsx';
+import { useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+import * as yup from 'yup';
 import Header from '~/components/auth/header';
 import API from '~/config/network';
-import { ApiError, ApiResponse } from '~/types/app';
-import { Role } from '~/types/role';
-import { Button, Form, Input, message, Select, Typography } from 'antd';
-import { Controller, useForm } from 'react-hook-form';
-import clsx from 'clsx';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect } from 'react';
-import { Simulate } from 'react-dom/test-utils';
+import type { ApiError, ApiResponse } from '~/types/app';
+import type { Role } from '~/types/role';
 
 interface FormType {
     phone: string;
@@ -52,12 +50,11 @@ export function LoginRole() {
         FormType
     >({
         mutationKey: 'login',
-        mutationFn: async (data) => {
-            return API.post('/api/v1/auth/login', {
+        mutationFn: async (data) =>
+            API.post('/api/v1/auth/login', {
                 ...data,
                 role,
-            });
-        },
+            }),
         onSuccess({
             data: {
                 data: { access_token },

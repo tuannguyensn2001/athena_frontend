@@ -1,10 +1,12 @@
-import React from 'react';
+import type { ComponentType } from 'react';
 import { Header } from '~/components/layout/header';
 
 export function withLayout<T extends Record<string, never>>(
-    Component: React.ComponentType<T>,
+    Component: ComponentType<T>,
 ) {
-    return function (props: T) {
+    return Result;
+
+    function Result(props: T) {
         return (
             <div className={'tw-min-h-screen '}>
                 <Header />
@@ -13,5 +15,5 @@ export function withLayout<T extends Record<string, never>>(
                 </main>
             </div>
         );
-    };
+    }
 }

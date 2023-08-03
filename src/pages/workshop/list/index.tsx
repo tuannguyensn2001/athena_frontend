@@ -29,7 +29,7 @@ export function ListWorkshops() {
         },
     });
     const navigate = useNavigate();
-    const { data } = useQuery({
+    const { data: _data } = useQuery({
         queryKey: [
             'workshops-own',
             searchParams.get('name'),

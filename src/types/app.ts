@@ -1,4 +1,4 @@
-import { AxiosError, AxiosResponse } from 'axios';
+import type { AxiosError, AxiosResponse } from 'axios';
 
 export type AppResponse<T = unknown> = {
     message: string;
