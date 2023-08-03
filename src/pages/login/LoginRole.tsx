@@ -34,10 +34,6 @@ export function LoginRole() {
         role: Role;
     }>();
 
-    if (role !== 'teacher' && role !== 'student') {
-        return <Navigate to={'/login'} />;
-    }
-
     const { control, reset, handleSubmit } = useForm<FormType>({
         defaultValues: {
             phone: '',
@@ -81,6 +77,10 @@ export function LoginRole() {
             password: '',
         });
     }, [role]);
+
+    if (role !== 'teacher' && role !== 'student') {
+        return <Navigate to={'/login'} />;
+    }
 
     const submit = (data: FormType) => {
         mutate(data);
