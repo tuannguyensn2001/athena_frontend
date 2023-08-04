@@ -1,3 +1,4 @@
+import flowRight from 'lodash/flowRight';
 import { createBrowserRouter } from 'react-router-dom';
 import { withAuth } from '~/components/auth/withAuth';
 import { CardClass } from '~/components/class/CardClass';
@@ -41,7 +42,17 @@ export const routesConfig = [
             const { ListWorkshops } = await import('~/pages/workshop/list');
 
             return {
-                Component: withAuth(withLayout(ListWorkshops)),
+                Component: flowRight(withAuth, withLayout)(ListWorkshops),
+            };
+        },
+    },
+    {
+        path: '/workshops/create',
+        async lazy() {
+            const { CreateWorkshop } = await import('~/pages/workshop/create');
+
+            return {
+                Component: flowRight(withAuth, withLayout)(CreateWorkshop),
             };
         },
     },

@@ -1,5 +1,7 @@
 import { ArrowLeftOutlined } from '@ant-design/icons';
 import { yupResolver } from '@hookform/resolvers/yup';
+import type { Role } from '~/types/role';
+
 import { Button, DatePicker, Form, Input, message, Typography } from 'antd';
 import dayjs from 'dayjs';
 import { Controller, useForm } from 'react-hook-form';
@@ -10,7 +12,6 @@ import Header from '~/components/auth/header';
 import API from '~/config/network';
 import type { IProfile } from '~/models/IProfile';
 import type { IUser } from '~/models/IUser';
-import type { Role } from '~/types/role';
 
 type FormType = Pick<IUser, 'email' | 'password' | 'phone'> & {
     confirm_password: string;

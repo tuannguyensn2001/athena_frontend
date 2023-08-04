@@ -1,8 +1,10 @@
+import { PlusOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Select } from 'antd';
 import { Controller, useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
 import {
     createSearchParams,
+    Link,
     useNavigate,
     useSearchParams,
 } from 'react-router-dom';
@@ -62,12 +64,19 @@ export function ListWorkshops() {
 
     return (
         <div className={'tw-container tw-mx-auto'}>
-            <div className={'tw-mt-5 tw-gap-5 tw-flex'}>
-                <div>
-                    <Button type={'primary'}>Lớp của bạn</Button>
+            <div className={'tw-mt-5 tw-justify-between tw-flex'}>
+                <div className={'tw-flex tw-gap-5'}>
+                    <div>
+                        <Button type={'primary'}>Lớp của bạn</Button>
+                    </div>
+                    <div>
+                        <Button>Lớp đã ẩn</Button>
+                    </div>
                 </div>
                 <div>
-                    <Button>Lớp đã ẩn</Button>
+                    <Link to={'/workshops/create'}>
+                        <Button icon={<PlusOutlined />}>Tạo lớp học</Button>
+                    </Link>
                 </div>
             </div>
 

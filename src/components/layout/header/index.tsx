@@ -26,21 +26,21 @@ export function Header() {
                     <div>
                         <Link to={'#'} className={'tw-no-underline tw-mr-12'}>
                             <Typography.Text
-                                className={clsx(['hover:tw-text-blue-600'])}
+                                className={clsx(['hover:tw-text-primary-600'])}
                             >
                                 Lớp học
                             </Typography.Text>
                         </Link>
                         <Link to={'#'} className={'tw-no-underline tw-mr-12'}>
                             <Typography.Text
-                                className={'hover:tw-text-blue-600'}
+                                className={'hover:tw-text-primary-600'}
                             >
                                 Học liệu
                             </Typography.Text>
                         </Link>
                         <Link to={'#'} className={'tw-no-underline'}>
                             <Typography.Text
-                                className={'hover:tw-text-blue-600'}
+                                className={'hover:tw-text-primary-600'}
                             >
                                 Lịch học
                             </Typography.Text>
