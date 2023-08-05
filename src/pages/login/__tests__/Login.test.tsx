@@ -1,4 +1,5 @@
 import { fireEvent, render, waitFor } from '@testing-library/react';
+import React from 'react';
 import { describe, it, vi } from 'vitest';
 import { Login } from '~/pages/login/Login';
 
@@ -7,6 +8,8 @@ const mockUseParams = vi.fn();
 vi.mock('react-router-dom', () => ({
     useNavigate: () => mockUsedNavigate,
     useParams: () => mockUseParams,
+    useMatches: () => [{ id: 'login' }],
+    Link: ({ children }: { children: React.ReactNode }) => <a>{children}</a>,
 }));
 // Tests
 describe('Renders main page correctly', async () => {
@@ -21,3 +24,5 @@ describe('Renders main page correctly', async () => {
         );
     });
 });
+
+// define test -> success
