@@ -1,12 +1,16 @@
+import flowRight from 'lodash/flowRight';
 import { createBrowserRouter } from 'react-router-dom';
+import { withAuth } from '~/components/auth/withAuth';
 import { CardClass } from '~/components/class/CardClass';
+import { withLayout } from '~/components/layout';
+import { Header } from '~/components/layout/header';
 import { Login, LoginRole } from '~/pages/login';
 import { Register, RegisterRole } from '~/pages/register';
 
 export const routesConfig = [
     {
         path: '/',
-        element: <div>hello athena</div>,
+        element: <Header />,
     },
     {
         path: '/login',
@@ -31,6 +35,26 @@ export const routesConfig = [
         path: '/register/:role',
         element: <RegisterRole />,
         id: 'register-role',
+    },
+    {
+        path: '/workshops',
+        async lazy() {
+            const { ListWorkshops } = await import('~/pages/workshop/list');
+
+            return {
+                Component: flowRight(withAuth, withLayout)(ListWorkshops),
+            };
+        },
+    },
+    {
+        path: '/workshops/create',
+        async lazy() {
+            const { CreateWorkshop } = await import('~/pages/workshop/create');
+
+            return {
+                Component: flowRight(withAuth, withLayout)(CreateWorkshop),
+            };
+        },
     },
 ];
 

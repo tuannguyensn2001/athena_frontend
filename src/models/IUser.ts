@@ -1,5 +1,5 @@
-import { IProfile } from '~/models/IProfile';
-import { Role } from '~/types/role';
+import type { IProfile } from '~/models/IProfile';
+import type { Role } from '~/types/role';
 
 export declare interface IUser {
     id: number;

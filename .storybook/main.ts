@@ -18,6 +18,7 @@ const config: StorybookConfig = {
                 },
             },
         },
+        'storybook-css-modules',
     ],
     framework: {
         name: '@storybook/react-vite',

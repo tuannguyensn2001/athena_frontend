@@ -1,18 +1,15 @@
-import axios from 'axios';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Button, Form, Input, message, Typography } from 'antd';
+import clsx from 'clsx';
+import { useEffect } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+import * as yup from 'yup';
 import Header from '~/components/auth/header';
 import API from '~/config/network';
-import { ApiError, ApiResponse } from '~/types/app';
-import { Role } from '~/types/role';
-import { Button, Form, Input, message, Select, Typography } from 'antd';
-import { Controller, useForm } from 'react-hook-form';
-import clsx from 'clsx';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { useEffect } from 'react';
-import { Simulate } from 'react-dom/test-utils';
-import reset = Simulate.reset;
+import type { ApiError, ApiResponse } from '~/types/app';
+import type { Role } from '~/types/role';
 
 interface FormType {
     phone: string;
@@ -35,10 +32,6 @@ export function LoginRole() {
         role: Role;
     }>();
 
-    if (role !== 'teacher' && role !== 'student') {
-        return <Navigate to={'/login'} />;
-    }
-
     const { control, reset, handleSubmit } = useForm<FormType>({
         defaultValues: {
             phone: '',
@@ -46,6 +39,8 @@ export function LoginRole() {
         },
         resolver: yupResolver(schema),
     });
+
+    const navigate = useNavigate();
 
     const { mutate, isLoading } = useMutation<
         ApiResponse<{
@@ -55,18 +50,18 @@ export function LoginRole() {
         FormType
     >({
         mutationKey: 'login',
-        mutationFn: async (data) => {
-            return API.post('/api/v1/auth/login', {
+        mutationFn: async (data) =>
+            API.post('/api/v1/auth/login', {
                 ...data,
                 role,
-            });
-        },
+            }),
         onSuccess({
             data: {
                 data: { access_token },
             },
         }) {
             localStorage.setItem('access_token', access_token);
+            navigate('/workshops');
         },
         onError() {
             void message.error('Đăng nhập thất bại');
@@ -79,6 +74,10 @@ export function LoginRole() {
             password: '',
         });
     }, [role]);
+
+    if (role !== 'teacher' && role !== 'student') {
+        return <Navigate to={'/login'} />;
+    }
 
     const submit = (data: FormType) => {
         mutate(data);
