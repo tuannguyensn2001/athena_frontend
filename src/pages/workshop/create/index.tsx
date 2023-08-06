@@ -8,7 +8,7 @@ import { InputSwitch } from '~/components/workshop/InputSwitch';
 import API from '~/config/network';
 import type { IWorkshop, Subject, Grade } from '~/models/IWorkshop';
 import * as yup from 'yup';
-import { ApiError, AppResponse } from '~/types/app';
+import type { ApiError, AppResponse } from '~/types/app';
 
 const schema = yup.object().shape({
     name: yup.string().default('').required('Vui lòng nhập tên lớp học'),
