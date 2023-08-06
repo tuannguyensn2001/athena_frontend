@@ -8,7 +8,7 @@ export function withLayout<T extends Record<string, never>>(
 
     function Result(props: T) {
         return (
-            <div className={'tw-min-h-screen '}>
+            <div>
                 <Header />
                 <main>
                     <Component {...props} />

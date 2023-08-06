@@ -23,6 +23,6 @@ export default {
     plugins: [],
     prefix: 'tw-',
     corePlugins: {
-        preflight: false,
+        preflight: true,
     },
 };

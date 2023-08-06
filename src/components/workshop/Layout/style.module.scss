@@ -1,0 +1,15 @@
+.container {
+  //height: calc(100vh - 72.5px);
+  @apply tw-grid tw-grid-cols-12 tw-divide-x tw-divide-slate-300;
+}
+
+.sidebar {
+  @apply tw-col-span-2;
+  //border-right: 0.5px solid #94a3b8;
+}
+
+.content {
+  @apply tw-col-span-8 tw-overflow-scroll;
+  height: calc(100vh - 72.5px);
+  //border-right: 0.5px solid #94a3b8;
+}
