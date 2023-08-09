@@ -8,13 +8,14 @@ import clsx from 'clsx';
 import { useQueryClient } from 'react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import useAuth from '~/hooks/useAuth';
+import styles from './style.module.scss';
 
 export function Header() {
     const { isLoggedIn, user } = useAuth();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     return (
-        <header className={'tw-shadow-md'}>
+        <header className={styles.header}>
             <nav className={'tw-flex tw-justify-between tw-py-4 tw-px-16'}>
                 <div>
                     <img
@@ -24,7 +25,10 @@ export function Header() {
                 </div>
                 <div className={'tw-flex tw-flex-col tw-justify-center'}>
                     <div>
-                        <Link to={'#'} className={'tw-no-underline tw-mr-12'}>
+                        <Link
+                            to={'/workshops'}
+                            className={'tw-no-underline tw-mr-12'}
+                        >
                             <Typography.Text
                                 className={clsx(['hover:tw-text-primary-600'])}
                             >

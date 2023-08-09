@@ -1,5 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Form, Input, Select } from 'antd';
+import { Button, Form, Input, Select, Skeleton } from 'antd';
 import { Controller, useForm } from 'react-hook-form';
 import { useQuery } from 'react-query';
 import {
@@ -8,7 +8,10 @@ import {
     useNavigate,
     useSearchParams,
 } from 'react-router-dom';
+import { CardWorkshop } from '~/components/workshop/CardWorkshop';
 import API from '~/config/network';
+import type { IWorkshop } from '~/models/IWorkshop';
+import type { ApiError, AppResponse } from '~/types/app';
 
 type Order =
     | 'name_asc'
@@ -24,6 +27,8 @@ interface FormType {
 
 export function ListWorkshops() {
     const [searchParams] = useSearchParams();
+    const isShow = searchParams.get('is_show') !== 'false';
+
     const { control, handleSubmit } = useForm<FormType>({
         defaultValues: {
             name: searchParams.get('name') || '',
@@ -31,34 +36,44 @@ export function ListWorkshops() {
         },
     });
     const navigate = useNavigate();
-    const { data: _data } = useQuery({
+    const { data, isLoading } = useQuery<AppResponse<IWorkshop[]>, ApiError>({
         queryKey: [
             'workshops-own',
             searchParams.get('name'),
             searchParams.get('order'),
+            searchParams.get('is_show'),
         ],
         queryFn: async () => {
             const response = await API.get('/api/v1/workshops/own', {
                 params: {
                     name: searchParams.get('name') || null,
                     order: (searchParams.get('order') as Order) || null,
+                    is_show: isShow,
                 },
             });
             return response.data;
         },
-        staleTime: Infinity,
     });
 
     const submit = (data: FormType) => {
-        const query: [string, string][] = [['name', data.name]];
+        if (data?.name) searchParams.set('name', data.name);
 
         if (data?.order) {
-            query.push(['order', data.order]);
+            searchParams.set('order', data.order);
         }
 
         navigate({
             pathname: '/workshops',
-            search: `?${createSearchParams(query)}`,
+            search: `?${createSearchParams(searchParams)}`,
+        });
+    };
+
+    const handleClickChangeModeShow = (is_show = true) => {
+        searchParams.set('is_show', is_show.toString());
+
+        navigate({
+            pathname: '/workshops',
+            search: `?${createSearchParams(searchParams)}`,
         });
     };
 
@@ -67,10 +82,20 @@ export function ListWorkshops() {
             <div className={'tw-mt-5 tw-justify-between tw-flex'}>
                 <div className={'tw-flex tw-gap-5'}>
                     <div>
-                        <Button type={'primary'}>Lớp của bạn</Button>
+                        <Button
+                            onClick={() => handleClickChangeModeShow(true)}
+                            type={isShow ? 'primary' : 'default'}
+                        >
+                            Lớp của bạn
+                        </Button>
                     </div>
                     <div>
-                        <Button>Lớp đã ẩn</Button>
+                        <Button
+                            onClick={() => handleClickChangeModeShow(false)}
+                            type={!isShow ? 'primary' : 'default'}
+                        >
+                            Lớp đã ẩn
+                        </Button>
                     </div>
                 </div>
                 <div>
@@ -130,6 +155,19 @@ export function ListWorkshops() {
                     </Button>
                 </div>
             </Form>
+
+            <div>
+                <div className="tw-grid-cols-4 tw-grid tw-gap-5">
+                    {!isLoading &&
+                        data?.data?.map((item) => (
+                            <CardWorkshop {...item} key={item.id} />
+                        ))}
+                    {isLoading &&
+                        [1, 2, 3, 4].map((item) => (
+                            <Skeleton key={item} active />
+                        ))}
+                </div>
+            </div>
         </div>
     );
 }

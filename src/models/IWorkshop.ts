@@ -25,4 +25,5 @@ export declare interface IWorkshop {
     is_show: boolean;
     created_at: number;
     updated_at: number;
+    code: string;
 }

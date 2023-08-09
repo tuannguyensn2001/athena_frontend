@@ -1,7 +1,6 @@
 import flowRight from 'lodash/flowRight';
 import { createBrowserRouter } from 'react-router-dom';
 import { withAuth } from '~/components/auth/withAuth';
-import { CardClass } from '~/components/class/CardClass';
 import { withLayout } from '~/components/layout';
 import { Header } from '~/components/layout/header';
 import { Login, LoginRole } from '~/pages/login';
@@ -21,10 +20,6 @@ export const routesConfig = [
         path: '/login/:role',
         element: <LoginRole />,
         id: 'login-role',
-    },
-    {
-        path: '/card-class',
-        element: <CardClass />,
     },
     {
         path: '/register',
@@ -55,6 +50,42 @@ export const routesConfig = [
                 Component: flowRight(withAuth, withLayout)(CreateWorkshop),
             };
         },
+    },
+    {
+        path: '/workshops/:code',
+        async lazy() {
+            const { WorkshopLayout } = await import(
+                '~/components/workshop/Layout'
+            );
+
+            return {
+                Component: flowRight(withAuth, withLayout)(WorkshopLayout),
+            };
+        },
+        children: [
+            {
+                path: 'newsfeed',
+                id: 'newsfeed',
+                async lazy() {
+                    const { Newsfeed } = await import('~/pages/newsfeed');
+
+                    return {
+                        Component: flowRight(withAuth)(Newsfeed),
+                    };
+                },
+            },
+            {
+                path: 'schedule',
+                id: 'schedule',
+                async lazy() {
+                    const { Schedule } = await import('~/pages/schedule');
+
+                    return {
+                        Component: flowRight(withAuth)(Schedule),
+                    };
+                },
+            },
+        ],
     },
 ];
 

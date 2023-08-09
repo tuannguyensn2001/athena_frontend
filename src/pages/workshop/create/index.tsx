@@ -1,9 +1,14 @@
+import { CheckOutlined } from '@ant-design/icons';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Button, Form, Input, Radio, Typography } from 'antd';
+import { Button, Card, Form, Input, message, Radio, Typography } from 'antd';
 import { Controller, useForm } from 'react-hook-form';
+import { useMutation } from 'react-query';
+import { useNavigate } from 'react-router-dom';
 import { InputSwitch } from '~/components/workshop/InputSwitch';
-import type { IWorkshop, Subject } from '~/models/IWorkshop';
+import API from '~/config/network';
+import type { IWorkshop, Subject, Grade } from '~/models/IWorkshop';
 import * as yup from 'yup';
+import type { ApiError, AppResponse } from '~/types/app';
 
 const schema = yup.object().shape({
     name: yup.string().default('').required('Vui lòng nhập tên lớp học'),
@@ -12,6 +17,7 @@ const schema = yup.object().shape({
     prevent_student_leave: yup.boolean().default(false),
     approve_show_score: yup.boolean().default(false),
     disable_newsfeed: yup.boolean().default(false),
+    grade: yup.mixed<Grade>().required('Vui lòng chọn khối học'),
 });
 
 type FormType = Pick<
@@ -22,16 +28,37 @@ type FormType = Pick<
     | 'approve_student'
     | 'prevent_student_leave'
     | 'disable_newsfeed'
+    | 'grade'
 >;
 
 export function CreateWorkshop() {
-    const { control, handleSubmit } = useForm<FormType>({
+    const {
+        control,
+        handleSubmit,
+        formState: { isValid },
+        watch,
+    } = useForm<FormType>({
+        mode: 'onBlur',
         defaultValues: schema.getDefault(),
         resolver: yupResolver(schema),
     });
+    const navigate = useNavigate();
+
+    const { mutate, isLoading } = useMutation<AppResponse, ApiError, FormType>({
+        mutationKey: 'createWorkshop',
+        mutationFn: async (data) => {
+            const response = await API.post('/api/v1/workshops', data);
+            return response.data;
+        },
+        onSuccess: async () => {
+            navigate('/workshops');
+            message.success('Tạo lớp học thành công');
+        },
+        onError: () => void message.error('Tạo lớp học thất bại'),
+    });
 
     const submit = (data: FormType) => {
-        console.log(data);
+        mutate(data);
     };
 
     return (
@@ -41,8 +68,8 @@ export function CreateWorkshop() {
                 size={'large'}
                 onFinish={handleSubmit(submit)}
             >
-                <div className="tw-grid tw-grid-cols-2 tw-gap-5">
-                    <div>
+                <div className="tw-grid tw-grid-cols-12 tw-gap-20">
+                    <div className={'tw-col-span-8'}>
                         <Controller
                             control={control}
                             name={'name'}
@@ -51,6 +78,7 @@ export function CreateWorkshop() {
                                 fieldState: { error, invalid },
                             }) => (
                                 <Form.Item
+                                    required
                                     validateStatus={
                                         invalid ? 'error' : 'success'
                                     }
@@ -146,6 +174,7 @@ export function CreateWorkshop() {
                                 fieldState: { error, invalid },
                             }) => (
                                 <Form.Item
+                                    required
                                     validateStatus={
                                         invalid ? 'error' : 'success'
                                     }
@@ -174,9 +203,99 @@ export function CreateWorkshop() {
                                 </Form.Item>
                             )}
                         />
+
+                        <Controller
+                            control={control}
+                            name={'grade'}
+                            render={({
+                                field,
+                                fieldState: { error, invalid },
+                            }) => (
+                                <Form.Item
+                                    required
+                                    validateStatus={
+                                        invalid ? 'error' : 'success'
+                                    }
+                                    help={error?.message}
+                                    label={
+                                        <Typography.Text strong>
+                                            Khối học
+                                        </Typography.Text>
+                                    }
+                                >
+                                    <Radio.Group
+                                        {...field}
+                                        options={[6, 7, 8, 9, 10, 11, 12].map(
+                                            (item) => ({
+                                                label: `Lớp ${item}`,
+                                                value: `${item}`,
+                                            }),
+                                        )}
+                                        optionType={'button'}
+                                        buttonStyle={'solid'}
+                                    />
+                                </Form.Item>
+                            )}
+                        />
                     </div>
-                    <div>
-                        <Button htmlType={'submit'}>Tao moi</Button>
+                    <div className={'tw-col-span-4'}>
+                        <div className={'tw-mt-11'}>
+                            <Button
+                                loading={isLoading}
+                                disabled={!isValid}
+                                size={'large'}
+                                type={'primary'}
+                                className={'tw-w-full'}
+                                htmlType={'submit'}
+                            >
+                                Tạo lớp
+                            </Button>
+                            <Typography.Text>
+                                Bạn phải nhập đầy đủ các trường bắt buộc để tạo
+                                lớp{' '}
+                                <span
+                                    className={'tw-text-red-600 tw-font-bold'}
+                                >
+                                    (*)
+                                </span>
+                            </Typography.Text>
+                            <Card>
+                                <Typography.Title level={5}>
+                                    Các bước đã thực hiện
+                                </Typography.Title>
+
+                                <div className={'tw-flex tw-justify-between'}>
+                                    <Typography.Text>
+                                        Đặt tên lớp học
+                                    </Typography.Text>
+                                    {watch('name') && (
+                                        <CheckOutlined
+                                            className={'tw-text-green-700 '}
+                                        />
+                                    )}
+                                </div>
+                                <div className={'tw-flex tw-justify-between'}>
+                                    <Typography.Text>
+                                        Chọn môn học
+                                    </Typography.Text>
+                                    {watch('subject') && (
+                                        <CheckOutlined
+                                            className={'tw-text-green-700 '}
+                                        />
+                                    )}
+                                </div>
+                                <div className={'tw-flex tw-justify-between'}>
+                                    <Typography.Text>
+                                        Chọn khối học
+                                    </Typography.Text>
+                                    {watch('grade') && (
+                                        <CheckOutlined
+                                            className={'tw-text-green-700 '}
+                                        />
+                                    )}
+                                </div>
+                            </Card>
+                        </div>
                     </div>
                 </div>
             </Form>
