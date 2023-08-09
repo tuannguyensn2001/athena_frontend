@@ -75,4 +75,4 @@ export const CardClass: React.FC<CardCourseProps> = ({
         </Dropdown>
       </div>
     </Card>
-)
+);
