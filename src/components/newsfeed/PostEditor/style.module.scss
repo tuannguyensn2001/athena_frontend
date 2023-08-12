@@ -1,0 +1,12 @@
+.quill {
+  //@apply tw-w-5/6;
+  @apply tw-w-full;
+  & > div:first-child {
+    @apply tw-border-none;
+
+    & > div:first-child ::before {
+      //@apply tw-font-normal;
+      font-style: normal;
+    }
+  }
+}

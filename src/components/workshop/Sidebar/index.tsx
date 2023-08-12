@@ -10,30 +10,12 @@ import {
     UserOutlined,
 } from '@ant-design/icons';
 import { Menu, Typography } from 'antd';
-import { useEffect, useMemo } from 'react';
-import { useQuery } from 'react-query';
-import {
-    useLocation,
-    useMatch,
-    useMatches,
-    useNavigate,
-    useParams,
-} from 'react-router-dom';
-import API from '~/config/network';
-import { GET_WORKSHOP_BY_CODE } from '~/define/api';
-import type { IWorkshop } from '~/models/IWorkshop';
-import type { ApiError, AppResponse } from '~/types/app';
+import { useMemo } from 'react';
+import { useMatches, useNavigate } from 'react-router-dom';
+import { useWorkshop } from '~/hooks/useWorkshop';
 
 export function Sidebar() {
-    const { code } = useParams();
-
-    const { data } = useQuery<AppResponse<IWorkshop>, ApiError>({
-        queryKey: [GET_WORKSHOP_BY_CODE, code],
-        queryFn: async () => {
-            const response = await API.get(`/api/v1/workshops/code/${code}`);
-            return response.data;
-        },
-    });
+    const { workshop } = useWorkshop();
 
     const navigate = useNavigate();
 
@@ -50,8 +32,6 @@ export function Sidebar() {
             id,
         };
     }, [matches]);
-
-    const workshop = useMemo(() => data?.data, [data]);
 
     const handleClickMenuItem = ({ key }: { key: string }) => {
         navigate(`${pathname}/${key}`);
