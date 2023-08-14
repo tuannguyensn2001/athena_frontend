@@ -20,6 +20,7 @@ export function useWorkshop() {
     const workshop = useMemo(() => data?.data, [data]);
 
     return {
+        code,
         workshop,
         ...res,
     };

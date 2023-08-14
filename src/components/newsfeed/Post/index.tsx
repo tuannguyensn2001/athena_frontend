@@ -4,24 +4,84 @@ import {
     LinkOutlined,
     MoreOutlined,
 } from '@ant-design/icons';
-import { Avatar, Dropdown, Form, Input, Typography } from 'antd';
+import {
+    Avatar,
+    Dropdown,
+    Form,
+    Input,
+    Skeleton,
+    Typography,
+    Card,
+} from 'antd';
 import dayjs from 'dayjs';
+import { useEffect } from 'react';
 import { Controller, useForm } from 'react-hook-form';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
+import API from '~/config/network';
+import { pusher } from '~/config/pusher';
 import useAuth from '~/hooks/useAuth';
 import type { IComment } from '~/models/IComment';
 import type { IPost } from '~/models/IPost';
+import type { ApiError, AppResponse } from '~/types/app';
 
 type Props = IPost;
 type FormType = Pick<IComment, 'content'>;
 
-export function Post({ user, created_at, content, comments }: Props) {
+export function Post({ user, created_at, content, id }: Props) {
     const { user: currentUser } = useAuth();
 
-    const { handleSubmit, control } = useForm<FormType>();
+    const { handleSubmit, control, resetField } = useForm<FormType>();
+
+    const queryClient = useQueryClient();
+
+    const { data, isLoading } = useQuery<AppResponse<IComment[]>, ApiError>({
+        queryKey: ['comments', id],
+        queryFn: async () => {
+            const response = await API.get(
+                `/api/v1/newsfeeds/comments/post/${id}`,
+            );
+            return response.data;
+        },
+    });
+
+    const { mutate } = useMutation<AppResponse, ApiError, FormType>({
+        mutationKey: 'comments',
+        mutationFn: async (data) => {
+            const response = await API.post('/api/v1/newsfeeds/comments', {
+                ...data,
+                post_id: id,
+            });
+            return response.data;
+        },
+        onSuccess() {
+            resetField('content');
+        },
+    });
+
+    useEffect(() => {
+        const channel = pusher.subscribe(`newsfeed-post-${id}`);
+
+        channel.bind('new-comment', () => {
+            void queryClient.invalidateQueries(['comments', id]);
+        });
+
+        return () => {
+            channel.unsubscribe();
+        };
+    }, []);
 
     const submit = (data: FormType) => {
-        console.log(data);
+        mutate(data);
     };
+
+    if (isLoading) {
+        return (
+            <Card>
+                <Skeleton />
+            </Card>
+        );
+    }
+
     return (
         <div className={'tw-bg-white tw-p-5 tw-rounded-xl'}>
             <div className={'tw-flex tw-justify-between'}>
@@ -79,7 +139,7 @@ export function Post({ user, created_at, content, comments }: Props) {
                 <div className={'tw-flex tw-gap-3'}>
                     <CommentOutlined />
                     <Typography.Text>
-                        {comments.length} bình luận
+                        {data?.data?.length} bình luận
                     </Typography.Text>
                 </div>
                 <div>

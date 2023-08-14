@@ -14,7 +14,7 @@ type FormType = Pick<IPost, 'content'>;
 
 export function PostEditor() {
     const { user } = useAuth();
-    const { control, handleSubmit, watch } = useForm<FormType>({});
+    const { control, handleSubmit, watch, resetField } = useForm<FormType>({});
     const { workshop } = useWorkshop();
 
     const { mutate } = useMutation<AppResponse, ApiError, FormType>({
@@ -25,6 +25,9 @@ export function PostEditor() {
                 workshop_id: workshop?.id,
             });
             return response.data;
+        },
+        onSuccess() {
+            resetField('content');
         },
     });
 
