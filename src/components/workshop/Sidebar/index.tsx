@@ -10,11 +10,11 @@ import {
     UserOutlined,
 } from '@ant-design/icons';
 import { Menu, Typography } from 'antd';
-import { useMemo } from 'react';
+import { useMemo, memo } from 'react';
 import { useMatches, useNavigate } from 'react-router-dom';
 import { useWorkshop } from '~/hooks/useWorkshop';
 
-export function Sidebar() {
+export const Sidebar = memo(function Sidebar() {
     const { workshop } = useWorkshop();
 
     const navigate = useNavigate();
@@ -102,4 +102,4 @@ export function Sidebar() {
             </div>
         </div>
     );
-}
+});

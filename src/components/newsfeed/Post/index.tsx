@@ -14,7 +14,7 @@ import {
     Card,
 } from 'antd';
 import dayjs from 'dayjs';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import API from '~/config/network';
@@ -23,12 +23,24 @@ import useAuth from '~/hooks/useAuth';
 import type { IComment } from '~/models/IComment';
 import type { IPost } from '~/models/IPost';
 import type { ApiError, AppResponse } from '~/types/app';
+import { memo } from 'react';
 
-type Props = IPost;
+type Props = IPost & {
+    isLastPost: boolean;
+    onAppear?: () => void;
+};
 type FormType = Pick<IComment, 'content'>;
 
-export function Post({ user, created_at, content, id }: Props) {
+export const Post = memo(function Post({
+    user,
+    created_at,
+    content,
+    id,
+    isLastPost,
+    onAppear,
+}: Props) {
     const { user: currentUser } = useAuth();
+    const [container, setContainer] = useState<HTMLDivElement | null>(null);
 
     const { handleSubmit, control, resetField } = useForm<FormType>();
 
@@ -70,6 +82,24 @@ export function Post({ user, created_at, content, id }: Props) {
         };
     }, []);
 
+    useEffect(() => {
+        if (!container) return;
+        if (!isLastPost) return;
+        const observer = new IntersectionObserver(
+            ([container]) => {
+                if (container.isIntersecting) {
+                    if (onAppear) {
+                        onAppear();
+                    }
+                }
+            },
+            {
+                threshold: 0.1,
+            },
+        );
+        observer.observe(container);
+    }, [isLastPost, container]);
+
     const submit = (data: FormType) => {
         mutate(data);
     };
@@ -83,7 +113,7 @@ export function Post({ user, created_at, content, id }: Props) {
     }
 
     return (
-        <div className={'tw-bg-white tw-p-5 tw-rounded-xl'}>
+        <div ref={setContainer} className={'tw-bg-white tw-p-5 tw-rounded-xl'}>
             <div className={'tw-flex tw-justify-between'}>
                 <div className={'tw-flex tw-gap-4'}>
                     <div className={'tw-flex tw-flex-col tw-justify-center'}>
@@ -172,4 +202,4 @@ export function Post({ user, created_at, content, id }: Props) {
             </Form>
         </div>
     );
-}
+});

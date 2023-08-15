@@ -17,7 +17,7 @@ export function PostEditor() {
     const { control, handleSubmit, watch, resetField } = useForm<FormType>({});
     const { workshop } = useWorkshop();
 
-    const { mutate } = useMutation<AppResponse, ApiError, FormType>({
+    const { mutate, isLoading } = useMutation<AppResponse, ApiError, FormType>({
         mutationKey: 'createPost',
         mutationFn: async (data) => {
             const response = await API.post('/api/v1/posts', {
@@ -64,7 +64,11 @@ export function PostEditor() {
                 />
             </div>
             <div className={'tw-p-5 tw-flex tw-justify-end'}>
-                <Button htmlType={'submit'} disabled={!watch('content')}>
+                <Button
+                    loading={isLoading}
+                    htmlType={'submit'}
+                    disabled={!watch('content') || isLoading}
+                >
                     Đăng tin
                 </Button>
             </div>
