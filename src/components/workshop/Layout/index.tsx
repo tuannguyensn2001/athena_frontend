@@ -1,7 +1,8 @@
 import { Outlet } from 'react-router-dom';
 import { Sidebar } from '~/components/workshop/Sidebar';
 import styles from './style.module.scss';
-import { RefObject, useRef } from 'react';
+import type { RefObject} from 'react';
+import { useRef } from 'react';
 
 export type OutletContext = {
     container: RefObject<HTMLDivElement>;

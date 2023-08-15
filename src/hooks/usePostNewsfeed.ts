@@ -1,47 +1,93 @@
-import { useWorkshop } from '~/hooks/useWorkshop';
+import { message } from 'antd';
+import flatten from 'lodash/flatten';
+import { useCallback, useEffect, useState } from 'react';
 import { useQuery, useQueryClient } from 'react-query';
-import { ApiError, AppResponse } from '~/types/app';
-import { IPost } from '~/models/IPost';
 import API from '~/config/network';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { pusher } from '~/config/pusher';
+import { useWorkshop } from '~/hooks/useWorkshop';
+import type { IPost } from '~/models/IPost';
+import type { ApiError, AppResponse } from '~/types/app';
 
 export function usePostNewsfeed() {
     const { workshop } = useWorkshop();
     const { code } = useWorkshop();
-    const [page, setPage] = useState(1);
-    const [posts, setPosts] = useState<IPost[]>([]);
-    const queryClient = useQueryClient();
+    // const [page, setPage] = useState(1);
+    const [cursors, setCursors] = useState<(string | number | null)[]>([null]);
+    const [_, contextHolder] = message.useMessage({
+        top: 100,
+    });
 
     const { data, ...response } = useQuery<AppResponse<IPost[]>, ApiError>({
-        queryKey: ['newsfeed', code, page],
+        queryKey: ['newsfeed', code, cursors.at(-1)],
         queryFn: async () => {
             const response = await API.get(
-                `/api/v1/posts/workshop/${workshop?.id}?page=${page}`,
+                `/api/v1/posts/workshop/${workshop?.id}`,
+                {
+                    params: {
+                        cursor: cursors.at(-1),
+                    },
+                },
             );
             return response.data;
         },
         enabled: !!workshop?.id,
-        onSuccess(response) {
-            setPosts((prevState) => [...prevState, ...response.data]);
-        },
-        staleTime: 30000,
+        onSuccess() {},
+        staleTime: Infinity,
         keepPreviousData: true,
+        refetchOnWindowFocus: false,
     });
 
-    const totalPage = useMemo(() => {
-        if (!data?.meta?.total) return 0;
-        return Math.ceil(data?.meta?.total / 3);
-    }, [data?.meta?.total]);
+    const queryClient = useQueryClient();
+
+    useEffect(() => {
+        const channel = pusher.subscribe(`newsfeed-workshop-${code}`);
+        channel.bind('new-post', (post: IPost) => {
+            queryClient.setQueryData(['newsfeed', code, null], (prev) => {
+                const previous = prev as AppResponse<IPost[]>;
+                if (!prev) return previous;
+                if (Array.isArray(previous.data)) {
+                    if (
+                        previous.data.length > 0 &&
+                        previous.data[0].id === post.id
+                    )
+                        return previous;
+                    return {
+                        ...prev,
+                        data: [post, ...previous.data],
+                    };
+                }
+            });
+        });
+
+        return () => {
+            channel.unsubscribe();
+        };
+    }, [code]);
+
+    const test = flatten(
+        cursors.map((item) => {
+            const queryKey = ['newsfeed', code, item];
+            const response =
+                queryClient.getQueryData<AppResponse<IPost[]>>(queryKey);
+            const status = queryClient.getQueryState(queryKey);
+            if (status?.status === 'loading') return [];
+
+            return response?.data || [];
+        }),
+    );
 
     const onAppearLastElement = useCallback(() => {
-        if (!totalPage) return;
-        if (page === totalPage) return;
-        setPage(page + 1);
-    }, [totalPage, page]);
+        if (!data?.meta?.next_cursor) return;
+        setCursors((prevState) => {
+            if (prevState.includes(data.meta.next_cursor)) return prevState;
+            return [...prevState, data.meta.next_cursor];
+        });
+    }, [data]);
 
     return {
         ...response,
-        posts: posts,
+        posts: test,
         onAppearLastElement,
+        contextHolder,
     };
 }

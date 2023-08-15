@@ -6,15 +6,15 @@ import {
 } from '@ant-design/icons';
 import {
     Avatar,
+    Card,
     Dropdown,
     Form,
     Input,
     Skeleton,
     Typography,
-    Card,
 } from 'antd';
 import dayjs from 'dayjs';
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import API from '~/config/network';
@@ -22,11 +22,12 @@ import { pusher } from '~/config/pusher';
 import useAuth from '~/hooks/useAuth';
 import type { IComment } from '~/models/IComment';
 import type { IPost } from '~/models/IPost';
+import { useNewsfeedStore } from '~/store/newsfeed';
 import type { ApiError, AppResponse } from '~/types/app';
-import { memo } from 'react';
 
 type Props = IPost & {
-    isLastPost: boolean;
+    isLastPost?: boolean;
+    isFirstPost?: boolean;
     onAppear?: () => void;
 };
 type FormType = Pick<IComment, 'content'>;
@@ -38,6 +39,7 @@ export const Post = memo(function Post({
     id,
     isLastPost,
     onAppear,
+    isFirstPost,
 }: Props) {
     const { user: currentUser } = useAuth();
     const [container, setContainer] = useState<HTMLDivElement | null>(null);
@@ -70,6 +72,8 @@ export const Post = memo(function Post({
         },
     });
 
+    const { setFirstPostAppear } = useNewsfeedStore();
+
     useEffect(() => {
         const channel = pusher.subscribe(`newsfeed-post-${id}`);
 
@@ -98,7 +102,22 @@ export const Post = memo(function Post({
             },
         );
         observer.observe(container);
+
+        return () => {
+            observer.unobserve(container);
+        };
     }, [isLastPost, container]);
+
+    useEffect(() => {
+        if (!container || !isFirstPost) return;
+        const observer = new IntersectionObserver(([container]) => {
+            setFirstPostAppear(container.isIntersecting);
+        });
+        observer.observe(container);
+        return () => {
+            observer.unobserve(container);
+        };
+    }, [isFirstPost, container]);
 
     const submit = (data: FormType) => {
         mutate(data);

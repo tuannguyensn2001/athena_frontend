@@ -6,6 +6,7 @@ export type AppResponse<T = unknown> = {
     meta: {
         total: number;
         page: number;
+        next_cursor: number | string;
     };
 };
 
