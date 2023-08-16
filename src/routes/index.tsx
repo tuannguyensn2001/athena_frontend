@@ -5,6 +5,7 @@ import { withLayout } from '~/components/layout';
 import { Header } from '~/components/layout/header';
 import { Login, LoginRole } from '~/pages/login';
 import { Register, RegisterRole } from '~/pages/register';
+import { Test } from '~/pages/test';
 
 export const routesConfig = [
     {
@@ -30,6 +31,10 @@ export const routesConfig = [
         path: '/register/:role',
         element: <RegisterRole />,
         id: 'register-role',
+    },
+    {
+        path: '/test',
+        element: <Test />,
     },
     {
         path: '/workshops',

@@ -13,4 +13,5 @@ export declare interface IPost {
     user?: IUser;
     workshop?: IWorkshop;
     comments: IComment[];
+    number_of_comments: number;
 }

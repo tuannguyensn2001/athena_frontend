@@ -1,3 +1,5 @@
+import type { IUser } from '~/models/IUser';
+
 export declare interface IComment {
     id: number;
     content: number;
@@ -5,4 +7,5 @@ export declare interface IComment {
     post_id: number;
     created_at: number;
     updated_at: number;
+    user?: IUser;
 }

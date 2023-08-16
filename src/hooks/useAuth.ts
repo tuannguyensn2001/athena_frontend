@@ -15,6 +15,7 @@ function useAuth() {
             return response.data;
         },
         retry: 1,
+        staleTime: Infinity,
     });
     const user = useMemo(() => data?.data, [data]);
 
