@@ -60,7 +60,7 @@ export const Sidebar = memo(function Sidebar() {
                                 icon: <ScheduleOutlined />,
                             },
                             {
-                                key: 'members',
+                                key: 'member',
                                 label: 'Thành viên',
                                 icon: <UserOutlined />,
                             },

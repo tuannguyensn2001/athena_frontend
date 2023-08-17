@@ -58,6 +58,7 @@ export const routesConfig = [
     },
     {
         path: '/workshops/:code',
+        id: 'workshop-detail',
         async lazy() {
             const { WorkshopLayout } = await import(
                 '~/components/workshop/Layout'
@@ -87,6 +88,17 @@ export const routesConfig = [
 
                     return {
                         Component: flowRight(withAuth)(Schedule),
+                    };
+                },
+            },
+            {
+                path: 'member',
+                id: 'member',
+                async lazy() {
+                    const { Member } = await import('~/pages/member');
+
+                    return {
+                        Component: flowRight(withAuth)(Member),
                     };
                 },
             },

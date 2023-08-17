@@ -21,7 +21,7 @@ export function Newsfeed() {
     };
 
     return (
-        <div className={'tw-divide-y tw-divide-slate-300'}>
+        <div className={'tw-divide-y tw-divide-slate-300 tw-bg-slate-200'}>
             <div className={'tw-pt-5 tw-pl-4 tw-pb-3 tw-bg-white'}>
                 <Typography.Title level={5}>Bảng tin</Typography.Title>
             </div>
