@@ -1,4 +1,5 @@
 import { Outlet, useMatches } from 'react-router-dom';
+import { Notification } from '~/components/workshop/Notification';
 import { Sidebar } from '~/components/workshop/Sidebar';
 import styles from './style.module.scss';
 import type { RefObject } from 'react';
@@ -30,7 +31,9 @@ export function WorkshopLayout() {
             >
                 <Outlet context={{ container }} />
             </div>
-            <div className={'tw-col-span-2'}>notification</div>
+            <div className={'tw-col-span-2'}>
+                <Notification />
+            </div>
         </div>
     );
 }
