@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import { withAuth } from '~/components/auth/withAuth';
 import { withLayout } from '~/components/layout';
 import { Header } from '~/components/layout/header';
+import { withRole } from '~/components/system/withRole';
 import { Login, LoginRole } from '~/pages/login';
 import { Register, RegisterRole } from '~/pages/register';
 import { Test } from '~/pages/test';
@@ -53,6 +54,19 @@ export const routesConfig = [
 
             return {
                 Component: flowRight(withAuth, withLayout)(CreateWorkshop),
+            };
+        },
+    },
+    {
+        path: '/workshops/find',
+        async lazy() {
+            const { FindWorkshop } = await import('~/pages/workshop/find');
+
+            return {
+                Component: flowRight(
+                    withRole('student'),
+                    withAuth,
+                )(FindWorkshop),
             };
         },
     },

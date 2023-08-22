@@ -8,6 +8,7 @@ import {
     useNavigate,
     useSearchParams,
 } from 'react-router-dom';
+import { Permission } from '~/components/system/Permission';
 import { CardWorkshop } from '~/components/workshop/CardWorkshop';
 import API from '~/config/network';
 import type { IWorkshop } from '~/models/IWorkshop';
@@ -99,9 +100,16 @@ export function ListWorkshops() {
                     </div>
                 </div>
                 <div>
-                    <Link to={'/workshops/create'}>
-                        <Button icon={<PlusOutlined />}>Tạo lớp học</Button>
-                    </Link>
+                    <Permission role={'teacher'}>
+                        <Link to={'/workshops/create'}>
+                            <Button icon={<PlusOutlined />}>Tạo lớp học</Button>
+                        </Link>
+                    </Permission>
+                    <Permission role={'student'}>
+                        <Link to={'/workshops/find'}>
+                            <Button>Tìm lớp học</Button>
+                        </Link>
+                    </Permission>
                 </div>
             </div>
 

@@ -1,14 +1,54 @@
-import { Button, Input, Table, Tooltip, Typography } from 'antd';
 import {
     DeleteOutlined,
     EditOutlined,
     SearchOutlined,
     ShareAltOutlined,
 } from '@ant-design/icons';
+import { Button, Input, Table, Tooltip, Typography } from 'antd';
+import { useMemo, useState } from 'react';
+import { useQuery } from 'react-query';
+import { ModalAddMember } from '~/components/member/ModalAddMember';
+import API from '~/config/network';
+import { useWorkshop } from '~/hooks/useWorkshop';
+import { IUser } from '~/models/IUser';
+import { ApiError, AppResponse } from '~/types/app';
 
 export function Member() {
+    const [openModalAddMember, setOpenModalAddMember] = useState(false);
+
+    const { workshop } = useWorkshop();
+
+    const { data } = useQuery<AppResponse<IUser[]>, ApiError>({
+        enabled: !!workshop?.id,
+        queryKey: ['members', workshop?.id],
+        queryFn: async () => {
+            const response = await API.get(
+                `/api/v1/members/students/workshop/${workshop?.id}`,
+            );
+            return response.data;
+        },
+    });
+
+    const dataSource = useMemo(() => {
+        if (!data?.data) return [];
+        return data.data.map((item) => ({
+            key: item.id,
+            school: item?.profile?.school,
+            username: item?.profile?.username,
+            id: item.id,
+            exercises: '0/0',
+            phone: item.phone,
+        }));
+    }, [data?.data]);
+
+    const handleClose = () => setOpenModalAddMember(false);
+
     return (
         <div className={'tw-divide-y tw-divide-slate-300'}>
+            <ModalAddMember
+                isOpen={openModalAddMember}
+                handleClose={handleClose}
+            />
             <div className={'tw-pt-5 tw-pl-4 tw-pb-3 tw-bg-white'}>
                 <Typography.Title level={5}>
                     Thành viên lớp học
@@ -28,7 +68,15 @@ export function Member() {
                             size={'large'}
                         />
                     </div>
-                    <div className={'tw-col-span-2'}>add</div>
+                    <div className={'tw-col-span-2'}>
+                        <Button
+                            onClick={() => setOpenModalAddMember(true)}
+                            type={'primary'}
+                            size={'large'}
+                        >
+                            Thêm học sinh
+                        </Button>
+                    </div>
                 </div>
 
                 <div>
@@ -38,6 +86,11 @@ export function Member() {
                                 title: 'Tên',
                                 dataIndex: 'username',
                                 key: 'username',
+                            },
+                            {
+                                title: 'Số điện thoại',
+                                dataIndex: 'phone',
+                                key: 'phone',
                             },
                             {
                                 render: (_, { id }) => (
@@ -82,15 +135,7 @@ export function Member() {
                                 ),
                             },
                         ]}
-                        dataSource={[
-                            {
-                                key: 1,
-                                school: 'ABC',
-                                username: 'ABC',
-                                id: 1,
-                                exercises: '0/0',
-                            },
-                        ]}
+                        dataSource={dataSource}
                     />
                 </div>
             </div>
