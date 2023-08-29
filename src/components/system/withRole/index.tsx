@@ -1,4 +1,4 @@
-import { ComponentType } from 'react';
+import type { ComponentType } from 'react';
 import { Loading } from '~/components/loading';
 import useAuth from '~/hooks/useAuth';
 import type { Role } from '~/types/role';

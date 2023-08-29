@@ -10,8 +10,8 @@ import { useQuery } from 'react-query';
 import { ModalAddMember } from '~/components/member/ModalAddMember';
 import API from '~/config/network';
 import { useWorkshop } from '~/hooks/useWorkshop';
-import { IUser } from '~/models/IUser';
-import { ApiError, AppResponse } from '~/types/app';
+import type { IUser } from '~/models/IUser';
+import type { ApiError, AppResponse } from '~/types/app';
 
 export function Member() {
     const [openModalAddMember, setOpenModalAddMember] = useState(false);

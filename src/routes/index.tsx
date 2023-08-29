@@ -1,46 +1,46 @@
 import flowRight from 'lodash/flowRight';
-import { createBrowserRouter } from 'react-router-dom';
-import { withAuth } from '~/components/auth/withAuth';
-import { withLayout } from '~/components/layout';
-import { Header } from '~/components/layout/header';
-import { withRole } from '~/components/system/withRole';
-import { Login, LoginRole } from '~/pages/login';
-import { Register, RegisterRole } from '~/pages/register';
-import { Test } from '~/pages/test';
+import {createBrowserRouter} from 'react-router-dom';
+import {withAuth} from '~/components/auth/withAuth';
+import {withLayout} from '~/components/layout';
+import {Header} from '~/components/layout/header';
+import {withRole} from '~/components/system/withRole';
+import {Login, LoginRole} from '~/pages/login';
+import {Register, RegisterRole} from '~/pages/register';
+import {Test} from '~/pages/test';
 
 export const routesConfig = [
     {
         path: '/',
-        element: <Header />,
+        element: <Header/>,
     },
     {
         path: '/login',
-        element: <Login />,
+        element: <Login/>,
         id: 'login',
     },
     {
         path: '/login/:role',
-        element: <LoginRole />,
+        element: <LoginRole/>,
         id: 'login-role',
     },
     {
         path: '/register',
-        element: <Register />,
+        element: <Register/>,
         id: 'register',
     },
     {
         path: '/register/:role',
-        element: <RegisterRole />,
+        element: <RegisterRole/>,
         id: 'register-role',
     },
     {
         path: '/test',
-        element: <Test />,
+        element: <Test/>,
     },
     {
         path: '/workshops',
         async lazy() {
-            const { ListWorkshops } = await import('~/pages/workshop/list');
+            const {ListWorkshops} = await import('~/pages/workshop/list');
 
             return {
                 Component: flowRight(withAuth, withLayout)(ListWorkshops),
@@ -50,7 +50,7 @@ export const routesConfig = [
     {
         path: '/workshops/create',
         async lazy() {
-            const { CreateWorkshop } = await import('~/pages/workshop/create');
+            const {CreateWorkshop} = await import('~/pages/workshop/create');
 
             return {
                 Component: flowRight(withAuth, withLayout)(CreateWorkshop),
@@ -60,7 +60,7 @@ export const routesConfig = [
     {
         path: '/workshops/find',
         async lazy() {
-            const { FindWorkshop } = await import('~/pages/workshop/find');
+            const {FindWorkshop} = await import('~/pages/workshop/find');
 
             return {
                 Component: flowRight(
@@ -71,12 +71,23 @@ export const routesConfig = [
         },
     },
     {
+        path: '/admin/feature-flag/target-group',
+        id: 'target-group',
+        async lazy() {
+            const {TargetGroup} = await import('~/pages/feature_flag/target_group');
+
+            return {
+                Component: flowRight()(TargetGroup),
+            };
+        }
+    },
+    {
         path: '/workshops/:code',
         id: 'workshop-detail',
         async lazy() {
-            const { WorkshopLayout } = await import(
+            const {WorkshopLayout} = await import(
                 '~/components/workshop/Layout'
-            );
+                );
 
             return {
                 Component: flowRight(withAuth, withLayout)(WorkshopLayout),
@@ -87,7 +98,7 @@ export const routesConfig = [
                 path: 'newsfeed',
                 id: 'newsfeed',
                 async lazy() {
-                    const { Newsfeed } = await import('~/pages/newsfeed');
+                    const {Newsfeed} = await import('~/pages/newsfeed');
 
                     return {
                         Component: flowRight(withAuth)(Newsfeed),
@@ -98,7 +109,7 @@ export const routesConfig = [
                 path: 'schedule',
                 id: 'schedule',
                 async lazy() {
-                    const { Schedule } = await import('~/pages/schedule');
+                    const {Schedule} = await import('~/pages/schedule');
 
                     return {
                         Component: flowRight(withAuth)(Schedule),
@@ -109,7 +120,7 @@ export const routesConfig = [
                 path: 'member',
                 id: 'member',
                 async lazy() {
-                    const { Member } = await import('~/pages/member');
+                    const {Member} = await import('~/pages/member');
 
                     return {
                         Component: flowRight(withAuth)(Member),

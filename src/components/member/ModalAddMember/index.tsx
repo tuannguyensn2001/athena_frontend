@@ -4,9 +4,9 @@ import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import API from '~/config/network';
 import { useWorkshop } from '~/hooks/useWorkshop';
-import { IUser } from '~/models/IUser';
+import type { IUser } from '~/models/IUser';
 import * as yup from 'yup';
-import { ApiError, AppResponse } from '~/types/app';
+import type { ApiError, AppResponse } from '~/types/app';
 
 interface Prop {
     isOpen: boolean;
