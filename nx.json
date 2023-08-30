@@ -1,0 +1,21 @@
+{
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "nx/tasks-runners/default",
+      "options": {
+        "cacheableOperations": [
+          "dev",
+          "build",
+          "storybook",
+          "build-storybook",
+          "test",
+          "lint",
+          "lint:fix"
+        ]
+      }
+    }
+  },
+  "affected": {
+    "defaultBase": "main"
+  }
+}
