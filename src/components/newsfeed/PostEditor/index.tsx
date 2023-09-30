@@ -20,7 +20,7 @@ export function PostEditor() {
     const { mutate, isLoading } = useMutation<AppResponse, ApiError, FormType>({
         mutationKey: 'createPost',
         mutationFn: async (data) => {
-            const response = await API.post('/api/v1/posts', {
+            const response = await API.post('/api/v1/newsfeed/posts', {
                 ...data,
                 workshop_id: workshop?.id,
             });

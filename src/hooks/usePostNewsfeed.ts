@@ -23,7 +23,7 @@ export function usePostNewsfeed() {
         queryKey: ['newsfeed', code, cursors.current.at(-1)],
         queryFn: async () => {
             const response = await API.get(
-                `/api/v1/posts/workshop/${workshop?.id}`,
+                `/api/v1/newsfeed/posts/workshops/${workshop?.id}`,
                 {
                     params: {
                         cursor: cursors.current.at(-1),

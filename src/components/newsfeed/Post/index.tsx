@@ -60,7 +60,7 @@ export const Post = memo(function Post({
         queryKey: ['comments', id],
         queryFn: async () => {
             const response = await API.get(
-                `/api/v1/newsfeeds/comments/post/${id}`,
+                `/api/v1/newsfeed/comments/posts/${id}`,
             );
             return response.data;
         },
@@ -70,7 +70,7 @@ export const Post = memo(function Post({
     const { mutate } = useMutation<AppResponse, ApiError, FormType>({
         mutationKey: 'comments',
         mutationFn: async (data) => {
-            const response = await API.post('/api/v1/newsfeeds/comments', {
+            const response = await API.post('/api/v1/newsfeed/comments', {
                 ...data,
                 post_id: id,
             });
@@ -88,7 +88,7 @@ export const Post = memo(function Post({
     >({
         mutationKey: 'delete-post',
         mutationFn: async (id) => {
-            const response = await API.delete(`/api/v1/newsfeeds/posts/${id}`);
+            const response = await API.delete(`/api/v1/newsfeed/posts/${id}`);
             return response.data;
         },
         onSuccess() {
@@ -104,7 +104,7 @@ export const Post = memo(function Post({
         mutationKey: 'delete-comment',
         mutationFn: async (id) => {
             const response = await API.delete(
-                `/api/v1/newsfeeds/comments/${id}`,
+                `/api/v1/newsfeed/comments/${id}`,
             );
             return response.data;
         },
