@@ -9,7 +9,7 @@
 }
 
 .content {
-  @apply tw-col-span-8  tw-overflow-scroll;
+  @apply   tw-overflow-scroll;
   height: calc(100vh - 72.5px);
 
   //border-right: 0.5px solid #94a3b8;

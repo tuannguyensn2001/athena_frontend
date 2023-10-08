@@ -1,0 +1,10 @@
+.header {
+  height: 10%;
+  @apply tw-flex tw-justify-between tw-p-5
+
+}
+
+.content {
+  height: 90%;
+  @apply tw-grid tw-grid-cols-7 tw-divide-x tw-divide-slate-300
+}

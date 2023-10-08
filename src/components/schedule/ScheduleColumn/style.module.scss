@@ -1,0 +1,9 @@
+.header {
+  @apply tw-flex tw-flex-col tw-gap-2 tw-px-2 tw-py-3;
+  height: 5rem;
+}
+
+.content {
+  height: calc(100vh - 5rem - 72.5px - 78.75px);
+  @apply tw-overflow-scroll
+}

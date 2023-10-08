@@ -23,7 +23,7 @@ export function Member() {
         queryKey: ['members', workshop?.id],
         queryFn: async () => {
             const response = await API.get(
-                `/api/v1/members/students/workshop/${workshop?.id}`,
+                `/api/v1/members/students/workshops/${workshop?.id}`,
             );
             return response.data;
         },

@@ -32,7 +32,7 @@ export function ModalAddMember({ isOpen, handleClose }: Prop) {
     const { mutate } = useMutation<AppResponse, ApiError, FormType>({
         mutationKey: 'addMember',
         mutationFn: async (data) => {
-            const response = await API.post('/api/v1/members/student', {
+            const response = await API.post('/api/v1/members/students', {
                 ...data,
                 workshop_id: workshop?.id,
             });

@@ -93,7 +93,15 @@ export const Sidebar = memo(function Sidebar() {
                 icon: <CreditCardOutlined />,
                 is_show: true,
             },
-        ].filter((item) => item.is_show);
+        ]
+            .filter((item) => item.is_show)
+            .map((item) => {
+                return {
+                    key: item.key,
+                    label: item.label,
+                    icon: item.icon,
+                };
+            });
     }, [user]);
 
     const handleClickMenuItem = ({ key }: { key: string }) => {
