@@ -1,23 +1,22 @@
 import dayjs from 'dayjs';
 import { useState } from 'react';
-import { Button, Modal, Typography, Input } from 'antd';
+import { Button, Modal, Typography, Input, message } from 'antd';
 import { PlusOutlined, CloseOutlined } from '@ant-design/icons';
 import { useForm, Controller } from 'react-hook-form';
 import { useNotificationWorkshop } from '~/hooks/useNotificationWorkshop';
 import { INotificationWorkshop } from '~/models/INotification';
 
-type NotiProps = Pick<INotificationWorkshop, 'content' | 'created_at'>;
 
 type NotificationForm = Pick<INotificationWorkshop, 'content'>;
 
 export function Notification() {
-    const { handleSubmit, control, reset } = useForm<NotificationForm>({
+    const { handleSubmit, control, reset, formState: { errors } } = useForm<NotificationForm>({
         defaultValues: {
             content: '',
         },
     });
-
-    const { notifications, handleAddNotification, handleDeleteNotification } =
+    
+    const { notifications, handleAddNotification, handleDeleteNotification, mutateAddNotification, mutateDeleteNotification } =
         useNotificationWorkshop();
 
     const { confirm } = Modal;
@@ -30,6 +29,7 @@ export function Notification() {
             cancelText: 'Thoát',
             onOk() {
                 handleDeleteNotification(id);
+                mutateDeleteNotification.mutate(id);
             },
             onCancel() {
                 console.log('Thoát');
@@ -52,16 +52,18 @@ export function Notification() {
     };
 
     const submit = (data: NotificationForm) => {
-        handleAddNotification({
+        let formData = {
             content: data.content,
             id: Math.random(),
-            created_at: dayjs().unix(),
-        });
+            created_at: dayjs().format('D [tháng] M [lúc] H:mm'),
+        }
+        handleAddNotification(formData)
+        mutateAddNotification.mutate(formData)
         reset({
             content: '',
         });
     };
-
+    
     return (
         <div>
             <Typography.Title level={5} className="tw-font-semibold tw-text-lg">
@@ -87,10 +89,14 @@ export function Notification() {
                     <Controller
                         name="content"
                         control={control}
+                        rules={{ required: true }}
                         render={({ field }) => (
-                            <Input {...field} placeholder="Nội dung" />
-                        )}
-                    />
+                            <Input {...field} placeholder="Nội dung" aria-invalid={errors.content ? 'true':'false'}/>
+                            )}
+                            />
+                            {errors.content?.type === 'required' && (
+                                <p className='tw-text-red-500' role='alert'>Vui lòng nhập nội dung thông báo</p>
+                            )}
                     <div className="tw-flex tw-justify-end tw-mt-3">
                         <Button
                             className="tw-mr-2 tw-w-20 tw-font-semibold tw-bg-slate-200"
