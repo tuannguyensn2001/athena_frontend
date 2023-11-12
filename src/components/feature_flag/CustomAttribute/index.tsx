@@ -51,6 +51,22 @@ export function CustomAttribute() {
                         title: 'Target type',
                         dataIndex: 'target_type',
                         key: 'target_type',
+                        sorter: (a, b) => a.target_type.localeCompare(b.target_type),
+                        onFilter: (value, record) => record.target_type === value,
+                        filters: [
+                            {
+                                text: 'User',
+                                value: 'user',
+                            },
+                            {
+                                text: 'Workshop',
+                                value: 'workshop',
+                            },
+                            {
+                                text: 'Member',
+                                value: 'member'
+                            }
+                        ]
                     },
                     {
                         title: 'Data type',
