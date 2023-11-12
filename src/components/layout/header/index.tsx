@@ -3,15 +3,15 @@ import {
     LogoutOutlined,
     ProfileOutlined,
 } from '@ant-design/icons';
-import { Avatar, Badge, Button, Dropdown, message, Typography } from 'antd';
+import {Avatar, Badge, Button, Dropdown, message, Typography} from 'antd';
 import clsx from 'clsx';
-import { useQueryClient } from 'react-query';
-import { Link, useNavigate } from 'react-router-dom';
+import {useQueryClient} from 'react-query';
+import {Link, useNavigate} from 'react-router-dom';
 import useAuth from '~/hooks/useAuth';
 import styles from './style.module.scss';
 
 export function Header() {
-    const { isLoggedIn, user } = useAuth();
+    const {isLoggedIn, user} = useAuth();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
     return (
@@ -42,13 +42,20 @@ export function Header() {
                                 Học liệu
                             </Typography.Text>
                         </Link>
-                        <Link to={'#'} className={'tw-no-underline'}>
+                        <Link to={'#'} className={'tw-no-underline tw-mr-12'}>
                             <Typography.Text
                                 className={'hover:tw-text-primary-600'}
                             >
                                 Lịch học
                             </Typography.Text>
                         </Link>
+                        {user?.is_admin && <Link to={'/feature-flag'} className={'tw-no-underline tw-mr-12'}>
+                            <Typography.Text
+                                className={'hover:tw-text-primary-600'}
+                            >
+                                Feature Flag
+                            </Typography.Text>
+                        </Link>}
                     </div>
                 </div>
                 <div className={'tw-flex tw-gap-5'}>
@@ -58,7 +65,7 @@ export function Header() {
                                 <div className="tw-flex tw-flex-col tw-justify-center">
                                     <Badge count={0}>
                                         <Button
-                                            icon={<BellOutlined />}
+                                            icon={<BellOutlined/>}
                                             size={'large'}
                                         />
                                     </Badge>
@@ -72,12 +79,12 @@ export function Header() {
                                         {
                                             key: 'profile',
                                             label: 'Thông tin cá nhân',
-                                            icon: <ProfileOutlined />,
+                                            icon: <ProfileOutlined/>,
                                         },
                                         {
                                             key: 'logout',
                                             label: 'Đăng xuất',
-                                            icon: <LogoutOutlined />,
+                                            icon: <LogoutOutlined/>,
                                             onClick: async () => {
                                                 localStorage.removeItem(
                                                     'access_token',

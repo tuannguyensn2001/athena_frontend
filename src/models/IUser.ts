@@ -8,4 +8,5 @@ export declare interface IUser {
     email: string;
     role: Role;
     profile?: IProfile;
+    is_admin: boolean;
 }

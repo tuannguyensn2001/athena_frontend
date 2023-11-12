@@ -1,17 +1,17 @@
-import { ArrowLeftOutlined } from '@ant-design/icons';
-import { yupResolver } from '@hookform/resolvers/yup';
-import type { Role } from '~/types/role';
+import {ArrowLeftOutlined} from '@ant-design/icons';
+import {yupResolver} from '@hookform/resolvers/yup';
+import type {Role} from '~/types/role';
 
-import { Button, DatePicker, Form, Input, message, Typography } from 'antd';
+import {Button, DatePicker, Form, Input, message, Typography} from 'antd';
 import dayjs from 'dayjs';
-import { Controller, useForm } from 'react-hook-form';
-import { useMutation } from 'react-query';
-import { Link, Navigate, useNavigate, useParams } from 'react-router-dom';
+import {Controller, useForm} from 'react-hook-form';
+import {useMutation} from 'react-query';
+import {Link, Navigate, useNavigate, useParams} from 'react-router-dom';
 import * as yup from 'yup';
 import Header from '~/components/auth/header';
 import API from '~/config/network';
-import type { IProfile } from '~/models/IProfile';
-import type { IUser } from '~/models/IUser';
+import type {IProfile} from '~/models/IProfile';
+import type {IUser} from '~/models/IUser';
 
 type FormType = Pick<IUser, 'email' | 'password' | 'phone'> & {
     confirm_password: string;
@@ -43,13 +43,13 @@ const schema = yup.object({
 });
 
 export function RegisterRole() {
-    const { role } = useParams<{
+    const {role} = useParams<{
         role: Role;
     }>();
 
     const navigate = useNavigate();
 
-    const { mutate, isLoading } = useMutation({
+    const {mutate, isLoading} = useMutation({
         mutationKey: 'register',
         mutationFn: async (data: FormType) =>
             API.post('/api/v1/auth/register', {
@@ -65,7 +65,7 @@ export function RegisterRole() {
         },
     });
 
-    const { control, handleSubmit } = useForm<FormType>({
+    const {control, handleSubmit} = useForm<FormType>({
         defaultValues: {
             email: '',
             password: '',
@@ -75,11 +75,12 @@ export function RegisterRole() {
             school: '',
             // birthday: 0,
         },
+        // @ts-ignore
         resolver: yupResolver(schema),
     });
 
     if (role !== 'teacher' && role !== 'student') {
-        return <Navigate to={'/register'} />;
+        return <Navigate to={'/register'}/>;
     }
 
     const submit = (data: FormType) => {
@@ -88,14 +89,14 @@ export function RegisterRole() {
 
     return (
         <div className={'tw-container tw-mx-auto'}>
-            <Header />
+            <Header/>
             <div className={'tw-flex tw-justify-center'}>
                 <div>
                     <Link
                         to={'/register'}
                         className={'tw-no-underline tw-text-blue-600'}
                     >
-                        <ArrowLeftOutlined />
+                        <ArrowLeftOutlined/>
                         <Typography.Text
                             className={'tw-text-blue-600 tw-font-bold tw-ml-2 '}
                         >
@@ -120,9 +121,9 @@ export function RegisterRole() {
                                 control={control}
                                 name={'username'}
                                 render={({
-                                    field,
-                                    fieldState: { error, invalid },
-                                }) => (
+                                             field,
+                                             fieldState: {error, invalid},
+                                         }) => (
                                     <Form.Item
                                         validateStatus={
                                             invalid ? 'error' : 'success'
@@ -140,9 +141,9 @@ export function RegisterRole() {
                                 control={control}
                                 name={'school'}
                                 render={({
-                                    field,
-                                    fieldState: { error, invalid },
-                                }) => (
+                                             field,
+                                             fieldState: {error, invalid},
+                                         }) => (
                                     <Form.Item
                                         validateStatus={
                                             invalid ? 'error' : 'success'
@@ -161,9 +162,9 @@ export function RegisterRole() {
                                 control={control}
                                 name={'birthday'}
                                 render={({
-                                    field,
-                                    fieldState: { error, invalid },
-                                }) => (
+                                             field,
+                                             fieldState: {error, invalid},
+                                         }) => (
                                     <Form.Item
                                         validateStatus={
                                             invalid ? 'error' : 'success'
@@ -196,9 +197,9 @@ export function RegisterRole() {
                                 control={control}
                                 name={'phone'}
                                 render={({
-                                    field,
-                                    fieldState: { error, invalid },
-                                }) => (
+                                             field,
+                                             fieldState: {error, invalid},
+                                         }) => (
                                     <Form.Item
                                         validateStatus={
                                             invalid ? 'error' : 'success'
@@ -217,9 +218,9 @@ export function RegisterRole() {
                                 control={control}
                                 name={'email'}
                                 render={({
-                                    field,
-                                    fieldState: { error, invalid },
-                                }) => (
+                                             field,
+                                             fieldState: {error, invalid},
+                                         }) => (
                                     <Form.Item
                                         validateStatus={
                                             invalid ? 'error' : 'success'
@@ -238,9 +239,9 @@ export function RegisterRole() {
                                 control={control}
                                 name={'password'}
                                 render={({
-                                    field,
-                                    fieldState: { error, invalid },
-                                }) => (
+                                             field,
+                                             fieldState: {error, invalid},
+                                         }) => (
                                     <Form.Item
                                         validateStatus={
                                             invalid ? 'error' : 'success'
@@ -260,9 +261,9 @@ export function RegisterRole() {
                                 control={control}
                                 name={'confirm_password'}
                                 render={({
-                                    field,
-                                    fieldState: { error, invalid },
-                                }) => (
+                                             field,
+                                             fieldState: {error, invalid},
+                                         }) => (
                                     <Form.Item
                                         validateStatus={
                                             invalid ? 'error' : 'success'

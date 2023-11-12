@@ -71,14 +71,14 @@ export const routesConfig = [
         },
     },
     {
-        path: '/admin/feature-flag/target-group',
-        id: 'target-group',
+        path: '/feature-flag',
+        id: 'feature-flag',
         async lazy() {
-            const {TargetGroup} = await import('~/pages/feature_flag/target_group');
+            const {FeatureFlag} = await import('~/pages/feature_flag');
 
             return {
-                Component: flowRight()(TargetGroup),
-            };
+                Component: flowRight(withAuth, withLayout)(FeatureFlag),
+            }
         }
     },
     {
