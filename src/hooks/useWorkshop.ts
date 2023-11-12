@@ -15,6 +15,9 @@ export function useWorkshop() {
             const response = await API.get(`/api/v1/workshops/code/${code}`);
             return response.data;
         },
+        onSuccess: (data) => {
+            localStorage.setItem('workshop_id', data.data.id.toString());
+        },
     });
 
     const workshop = useMemo(() => data?.data, [data]);
