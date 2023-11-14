@@ -1,4 +1,5 @@
 import { DeleteOutlined } from '@ant-design/icons';
+import { yupResolver } from '@hookform/resolvers/yup';
 import {
     Button,
     Divider,
@@ -7,23 +8,21 @@ import {
     Modal,
     notification,
     Select,
-    Space,
 } from 'antd';
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
 import clsx from 'clsx';
 import get from 'lodash/get';
 import { useEffect, useMemo } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
+import * as yup from 'yup';
 import API from '~/config/network';
 import { Operator } from '~/define/operator';
 import useGetCustomAttribute from '~/hooks/useGetCustomAttribute';
 import type { ITargetGroup } from '~/models/ITargetGroup';
-import { ITargetType } from '~/models/ITargetType';
-import { AppResponse } from '~/types/app';
+import type { ITargetType } from '~/models/ITargetType';
+import type { AppResponse } from '~/types/app';
 import type { ModalFeatureFlag } from '~/types/feature_flag';
-import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 
 type Props = ModalFeatureFlag;
 
