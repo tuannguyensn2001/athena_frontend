@@ -1,30 +1,30 @@
-import {Tabs} from 'antd';
-import {CustomAttribute} from "~/components/feature_flag/CustomAttribute";
-
+import { Tabs } from 'antd';
+import { CustomAttribute } from '~/components/feature_flag/CustomAttribute';
+import { TargetGroup } from '~/components/feature_flag/TargetGroup';
 
 export function FeatureFlag() {
     return (
         <div className={'tw-container tw-mx-auto'}>
             <Tabs
-                defaultActiveKey={'custom_attribute'}
+                defaultActiveKey={'target_group'}
                 items={[
                     {
                         key: 'feature_flag',
                         label: 'Feature Flag',
-                        children: 'feature flag'
+                        children: 'feature flag',
                     },
                     {
                         key: 'target_group',
                         label: 'Target Group',
-                        children: 'target group'
+                        children: <TargetGroup />,
                     },
                     {
                         key: 'custom_attribute',
                         label: 'Custom Attribute',
-                        children: <CustomAttribute/>
-                    }
+                        children: <CustomAttribute />,
+                    },
                 ]}
             />
         </div>
-    )
+    );
 }
