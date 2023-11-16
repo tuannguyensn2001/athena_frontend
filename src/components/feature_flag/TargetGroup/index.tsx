@@ -6,11 +6,15 @@ import { ModalTargetGroup } from '~/components/feature_flag/ModalTargetGroup';
 import API from '~/config/network';
 import type { ITargetGroup } from '~/models/ITargetGroup';
 import type { AppResponse } from '~/types/app';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import get from 'lodash/get';
 
 export function TargetGroup() {
     const [on, toggle] = useToggle(false);
+
+    const [selectedTargetGroup, setSelectedTargetGroup] = useState<
+        number | null
+    >(null);
 
     const { data, isLoading } = useQuery<
         AppResponse<ITargetGroup[]>,
@@ -27,9 +31,18 @@ export function TargetGroup() {
 
     const targetGroups = useMemo(() => get(data, 'data', []), [data]);
 
+    const handleClickEdit = (id: number) => {
+        setSelectedTargetGroup(id);
+        toggle();
+    };
+
     return (
         <div>
-            <ModalTargetGroup open={on} onToggle={toggle} />
+            <ModalTargetGroup
+                selectedTargetGroup={selectedTargetGroup}
+                open={on}
+                onToggle={toggle}
+            />
 
             <Button onClick={toggle}>Create</Button>
 
@@ -56,7 +69,13 @@ export function TargetGroup() {
                         {
                             key: 'action',
                             title: 'Action',
-                            render: (_, record) => <Button>Edit</Button>,
+                            render: (_, record) => (
+                                <Button
+                                    onClick={() => handleClickEdit(record.id)}
+                                >
+                                    Edit
+                                </Button>
+                            ),
                         },
                     ]}
                 />

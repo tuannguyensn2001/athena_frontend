@@ -14,7 +14,8 @@ import clsx from 'clsx';
 import get from 'lodash/get';
 import { useEffect, useMemo } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
-import { useMutation } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
+import { ref } from 'yup';
 import * as yup from 'yup';
 import API from '~/config/network';
 import { Operator } from '~/define/operator';
@@ -24,7 +25,9 @@ import type { ITargetType } from '~/models/ITargetType';
 import type { AppResponse } from '~/types/app';
 import type { ModalFeatureFlag } from '~/types/feature_flag';
 
-type Props = ModalFeatureFlag;
+type Props = ModalFeatureFlag & {
+    selectedTargetGroup: number | null;
+};
 
 type FormType = Pick<ITargetGroup, 'name' | 'target_type' | 'conditions'>;
 
@@ -46,20 +49,26 @@ const schema = yup.object().shape({
     }),
 });
 
-export function ModalTargetGroup({ open, onToggle }: Props) {
-    const { control, handleSubmit, watch, setValue } = useForm<FormType>({
-        defaultValues: {
-            name: '',
-            target_type: 'workshop',
-            conditions: {
-                operator: 'and',
-                list: [],
+export function ModalTargetGroup({
+    open,
+    onToggle,
+    selectedTargetGroup,
+}: Props) {
+    const { control, handleSubmit, watch, reset, setValue } = useForm<FormType>(
+        {
+            defaultValues: {
+                name: '',
+                target_type: 'workshop',
+                conditions: {
+                    operator: 'and',
+                    list: [],
+                },
             },
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            resolver: yupResolver(schema),
         },
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        resolver: yupResolver(schema),
-    });
+    );
     const { fields, append, remove } = useFieldArray({
         control: control,
         name: 'conditions.list',
@@ -108,6 +117,68 @@ export function ModalTargetGroup({ open, onToggle }: Props) {
         },
     });
 
+    const canEdit = useMemo(() => !!selectedTargetGroup, [selectedTargetGroup]);
+
+    const { mutate: mutateEdit } = useMutation<
+        AppResponse,
+        AxiosError,
+        FormType
+    >({
+        mutationKey: 'updateTargetGroup',
+        mutationFn: async (data) => {
+            const response = await API.put(
+                `/api/v1/feature_flag/target_groups/${selectedTargetGroup}`,
+                data,
+            );
+            return response.data;
+        },
+        onSuccess() {
+            api.success({
+                message: 'Success',
+                description: 'Update target group successfully',
+            });
+            onToggle();
+        },
+        onError() {
+            api.error({
+                message: 'Failed',
+                description: 'Update target group failed',
+            });
+        },
+    });
+
+    const { refetch } = useQuery<AppResponse<ITargetGroup>, AxiosError>({
+        queryKey: ['target_group', selectedTargetGroup],
+        queryFn: async () => {
+            const response = await API.get(
+                `/api/v1/feature_flag/target_groups/${selectedTargetGroup}`,
+            );
+            return response.data;
+        },
+        enabled: selectedTargetGroup !== null,
+        onSuccess(data) {
+            reset({
+                name: data.data.name,
+                target_type: data.data.target_type,
+                conditions: data.data.conditions,
+            });
+        },
+    });
+
+    useEffect(() => {
+        if (!!selectedTargetGroup && open) {
+            refetch();
+        }
+        reset({
+            name: '',
+            target_type: 'workshop',
+            conditions: {
+                operator: 'and',
+                list: [],
+            },
+        });
+    }, [open]);
+
     const getOperator = (index: number) => {
         const field = watch(`conditions.list.${index}.field`);
         if (!field) return { operators: [], hasValue: false };
@@ -118,7 +189,8 @@ export function ModalTargetGroup({ open, onToggle }: Props) {
         return Operator[attribute.data_type];
     };
 
-    const submit = (data: FormType) => mutate(data);
+    const submit = (data: FormType) =>
+        canEdit ? mutateEdit(data) : mutate(data);
 
     const handleAddField = () => {
         append({
@@ -143,6 +215,7 @@ export function ModalTargetGroup({ open, onToggle }: Props) {
             >
                 <Form layout={'vertical'}>
                     <Controller
+                        disabled={canEdit}
                         control={control}
                         name={'name'}
                         render={({ field, fieldState: { error, invalid } }) => (
@@ -156,6 +229,7 @@ export function ModalTargetGroup({ open, onToggle }: Props) {
                         )}
                     />
                     <Controller
+                        disabled={canEdit}
                         control={control}
                         name={'target_type'}
                         render={({ field, fieldState: { error, invalid } }) => (
